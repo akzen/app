@@ -1,8 +1,8 @@
 package render
 
 import (
-	"app/package/config"
 	"bytes"
+	"golang-webapp/package/config"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,7 +13,7 @@ var functions = template.FuncMap{}
 
 var app *config.AppConfig
 
-// NewTemplates sets the config for the template
+// NewTemplates sets the config for the template package
 func NewTemplates(a *config.AppConfig) {
 	app = a
 }
@@ -22,20 +22,17 @@ func NewTemplates(a *config.AppConfig) {
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	//get the template cache from app config
 
-	tc, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	tc := app.TemplateCache
 
 	//get requested template from cache
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not get template from template cache")
 	}
 
 	buf := new(bytes.Buffer)
 
-	err = t.Execute(buf, nil)
+	err := t.Execute(buf, nil)
 	if err != nil {
 		log.Println(err)
 	}

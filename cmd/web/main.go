@@ -1,10 +1,10 @@
 package main
 
 import (
-	"app/package/config"
-	"app/package/handlers"
-	"app/package/render"
 	"fmt"
+	"golang-webapp/package/config"
+	"golang-webapp/package/handlers"
+	"golang-webapp/package/render"
 	"log"
 	"net/http"
 )
@@ -16,11 +16,13 @@ func main() {
 	var app config.AppConfig
 
 	tc, err := render.CreateTemplateCache()
-	
+
 	if err != nil {
 		log.Fatal("Cannot create template cache")
 	}
 	app.TemplateCache = tc
+
+	render.NewTemplates(&app)
 
 	http.HandleFunc("/", handlers.Home)
 	http.HandleFunc("/About", handlers.About)
