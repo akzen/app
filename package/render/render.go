@@ -3,13 +3,14 @@ package render
 import (
 	"bytes"
 	"golang-webapp/package/config"
+	"golang-webapp/package/models"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-var functions = template.FuncMap{}
+// var functions = template.FuncMap{}
 
 var app *config.AppConfig
 
@@ -19,10 +20,17 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 // RenderTemplate renders templates using html/template
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+
+	var tc map[string]*template.Template
 	//get the template cache from app config
 
-	tc := app.TemplateCache
+	if app.UseCache {
+		tc = app.TemplateCache
+
+	} else {
+		tc, _ = CreateTemplateCache()
+	}
 
 	//get requested template from cache
 	t, ok := tc[tmpl]
@@ -32,7 +40,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
 	buf := new(bytes.Buffer)
 
-	err := t.Execute(buf, nil)
+	err := t.Execute(buf, td)
+
 	if err != nil {
 		log.Println(err)
 	}

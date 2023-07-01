@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"golang-webapp/package/config"
+	"golang-webapp/package/models"
 	"golang-webapp/package/render"
 	"net/http"
 )
@@ -25,10 +26,14 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
-func About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl")
+func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hey!! There"
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
